@@ -1,4 +1,6 @@
+from django.contrib import admin
 from django.db import models
+from django.forms import forms
 from django.utils.html import strip_tags
 
 from .forms import QuillFormField
@@ -149,3 +151,9 @@ class QuillField(models.TextField):
     def value_to_string(self, obj):
         value = self.value_from_object(obj)
         return self.get_prep_value(value)
+
+class QuillFieldAdminMixin(admin.ModelAdmin):
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'your_custom_field_name':  # Replace with your custom field name
+            kwargs['widget'] = forms.Textarea(attrs={'rows': 20, 'cols': 60})
+        return super().formfield_for_dbfield(db_field, **kwargs)
